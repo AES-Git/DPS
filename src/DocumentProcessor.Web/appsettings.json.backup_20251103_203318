@@ -11,7 +11,7 @@
   "AllowedHosts": "*",
   "ConnectionStrings": {
     "LocalSqlServer": "Server=(localdb)\\MSSQLLocalDB;Database=DocumentProcessorDB_Clean;Integrated Security=true;MultipleActiveResultSets=true;Encrypt=false",
-    "DefaultConnection": "Server=atx-database.ckxhjowsksmo.us-east-1.rds.amazonaws.com,1433;Database=DPS;Integrated Security=false;TrustServerCertificate=true;MultipleActiveResultSets=true"
+    "DefaultConnection": "Server=;Database=;Integrated Security=false;TrustServerCertificate=true;MultipleActiveResultSets=true"
   },
   "DocumentProcessing": {
     "StoragePath": "uploads",
