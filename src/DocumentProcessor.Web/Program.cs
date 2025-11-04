@@ -5,11 +5,7 @@ using DocumentProcessor.Web.Hubs;
 using DocumentProcessor.Web.Services;
 using DocumentProcessor.Application;
 using DocumentProcessor.Core.Entities;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.RateLimiting;
 using System.Threading.RateLimiting;
-using System.IO;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -71,7 +67,7 @@ using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
-    await DocumentProcessor.Infrastructure.Data.StoredProcedureInitializer.InitializeStoredProceduresAsync(context, logger);
+    await StoredProcedureInitializer.InitializeStoredProceduresAsync(context, logger);
 }
 
 // Seed test document types if none exist

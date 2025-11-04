@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using System.Runtime.InteropServices;
 
 namespace DocumentProcessor.Infrastructure;
 
@@ -120,13 +121,42 @@ public static class InfrastructureServiceCollectionExtensions
 
         try
         {
-            logger.LogInformation("Ensuring database exists and is up to date...");
-            await context.Database.MigrateAsync();
-            logger.LogInformation("Database is ready");
+            // Detect the operating system
+            bool isWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+            string osName = isWindows ? "Windows" : "Linux/Unix";
+            
+            logger.LogInformation("Running on {OS} operating system", osName);
+
+            if (isWindows)
+            {
+                // Only run migrations on Windows
+                logger.LogInformation("Ensuring database exists and applying migrations...");
+                await context.Database.MigrateAsync();
+                logger.LogInformation("Database migrations completed successfully");
+            }
+            else
+            {
+                // On Linux, skip migrations but ensure database connection is working
+                logger.LogInformation("Running on Linux - skipping database migrations");
+                logger.LogInformation("Verifying database connectivity...");
+                
+                // Just test the connection without running migrations
+                var canConnect = await context.Database.CanConnectAsync();
+                if (canConnect)
+                {
+                    logger.LogInformation("Database connection verified successfully");
+                }
+                else
+                {
+                    logger.LogWarning("Unable to connect to database");
+                }
+            }
+            
+            logger.LogInformation("Database initialization complete");
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "An error occurred while migrating the database");
+            logger.LogError(ex, "An error occurred during database initialization");
             throw;
         }
     }
