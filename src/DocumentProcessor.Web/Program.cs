@@ -12,6 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents().AddInteractiveServerComponents();
 builder.Services.AddServerSideBlazor().AddCircuitOptions(o => { if (builder.Environment.IsDevelopment()) o.DetailedErrors = true; });
 
+// Configure database connection
 string connectionString;
 try
 {
@@ -22,12 +23,12 @@ try
     var host = secretsService.GetFieldFromSecret(secretJson, "host");
     var port = secretsService.GetFieldFromSecret(secretJson, "port");
     var dbname = secretsService.GetFieldFromSecret(secretJson, "dbname");
-    connectionString = $"Server={host},{port};Database={dbname};User Id={username};Password={password};TrustServerCertificate=true;Encrypt=true";
-    builder.Services.AddSingleton(secretsService);
+    connectionString = $"Server={host},{port};Database={dbname};User Id={username};Password={password};TrustServerCertificate=true;MultipleActiveResultSets=true";
 }
 catch (Exception ex)
 {
-    Console.WriteLine($"Warning: AWS Secrets failed: {ex.Message}");
+    Console.WriteLine($"Warning: Could not load connection string from AWS Secrets Manager: {ex.Message}");
+    Console.WriteLine("Falling back to appsettings.json connection string");
     connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? "Server=localhost;Database=DocumentProcessor;Integrated Security=true;TrustServerCertificate=True;";
 }
 
