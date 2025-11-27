@@ -13,17 +13,42 @@ builder.Services.AddRazorComponents().AddInteractiveServerComponents();
 builder.Services.AddServerSideBlazor().AddCircuitOptions(o => { if (builder.Environment.IsDevelopment()) o.DetailedErrors = true; });
 
 // Configure database connection
-string connectionString;
+string connectionString = string.Empty;
 try
 {
     var secretsService = new SecretsService();
-    var secretJson = await secretsService.GetSecretByDescriptionPrefixAsync("Password for RDS MSSQL used for MAM319.");
-    var username = secretsService.GetFieldFromSecret(secretJson, "username");
-    var password = secretsService.GetFieldFromSecret(secretJson, "password");
-    var host = secretsService.GetFieldFromSecret(secretJson, "host");
-    var port = secretsService.GetFieldFromSecret(secretJson, "port");
-    var dbname = secretsService.GetFieldFromSecret(secretJson, "dbname");
-    connectionString = $"Server={host},{port};Database={dbname};User Id={username};Password={password};TrustServerCertificate=true;MultipleActiveResultSets=true";
+    string secretJson;
+
+    // First: Try to get secret with "target" in name (Postgres)
+    try
+    {
+        secretJson = await secretsService.GetSecretAsync("atx-db-modernization-atx-db-modernization-1-target");
+        if (!string.IsNullOrWhiteSpace(secretJson))
+        {
+            var username = secretsService.GetFieldFromSecret(secretJson, "username");
+            var password = secretsService.GetFieldFromSecret(secretJson, "password");
+            var host = secretsService.GetFieldFromSecret(secretJson, "host");
+            var port = secretsService.GetFieldFromSecret(secretJson, "port");
+            var dbname = "postgres";
+            connectionString = $"Host={host};Port={port};Database={dbname};Username={username};Password={password};SSL Mode=Require;Trust Server Certificate=true";
+        }
+        else throw new Exception("Secret was empty");
+    }
+    catch
+    {
+        // Second: Try to get secret by description (SQL Server)
+        secretJson = await secretsService.GetSecretByDescriptionPrefixAsync("Password for RDS MSSQL used for MAM319.");
+        if (!string.IsNullOrWhiteSpace(secretJson))
+        {
+            var username = secretsService.GetFieldFromSecret(secretJson, "username");
+            var password = secretsService.GetFieldFromSecret(secretJson, "password");
+            var host = secretsService.GetFieldFromSecret(secretJson, "host");
+            var port = secretsService.GetFieldFromSecret(secretJson, "port");
+            var dbname = secretsService.GetFieldFromSecret(secretJson, "dbname");
+            connectionString = $"Server={host},{port};Database={dbname};User Id={username};Password={password};TrustServerCertificate=true;Encrypt=true";
+        }
+        else throw new Exception("Failed to retrieve database credentials from Secrets Manager");
+    }
 }
 catch (Exception ex)
 {

@@ -9,6 +9,19 @@ public class SecretsService
 {
     private readonly IAmazonSecretsManager _sm = new AmazonSecretsManagerClient(RegionEndpoint.USEast1);
 
+    public async Task<string> GetSecretAsync(string secretName)
+    {
+        try
+        {
+            var response = await _sm.GetSecretValueAsync(new GetSecretValueRequest { SecretId = secretName });
+            return response.SecretString;
+        }
+        catch (Exception)
+        {
+            throw new Exception($"Secret not found: {secretName}");
+        }
+    }
+
     public async Task<string> GetSecretByDescriptionPrefixAsync(string prefix)
     {
         var list = await _sm.ListSecretsAsync(new ListSecretsRequest());
