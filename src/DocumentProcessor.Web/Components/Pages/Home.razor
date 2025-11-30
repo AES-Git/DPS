@@ -21,13 +21,19 @@
     @if (DbInfo.DatabaseType.Contains("PostgreSQL"))
     {
         <div class="db-banner db-banner-postgres mb-4">
-            <i class="bi bi-rocket-takeoff-fill me-2"></i>YOU DID IT !!! I am running on Amazon Aurora PostgreSQL!!!
+            <img src="https://cdn.worldvectorlogo.com/logos/postgresql.svg" alt="PostgreSQL" class="db-logo me-3" />
+            <span class="db-banner-text">
+                <i class="bi bi-rocket-takeoff-fill me-2"></i>YOU DID IT !!! I am running on Amazon Aurora PostgreSQL!!!
+            </span>
         </div>
     }
     else
     {
         <div class="db-banner db-banner-sql mb-4">
-            <i class="bi bi-database-fill me-2"></i>I am running on SQL Server...
+            <img src="https://cdn.worldvectorlogo.com/logos/microsoft-sql-server-1.svg" alt="SQL Server" class="db-logo me-3" />
+            <span class="db-banner-text">
+                <i class="bi bi-database-fill me-2"></i>I am running on SQL Server...
+            </span>
         </div>
     }
     <div class="row mb-3">
@@ -175,9 +181,11 @@
     .action-icon { font-size: clamp(1rem, 2.5vw, 1.5rem); line-height: 1; }
     .footer-icon { font-size: 1.3rem; vertical-align: middle; line-height: 1; }
     .status-badge-icon { font-size: clamp(1rem, 2.5vw, 1.4rem); line-height: 1; }
-    .db-banner { padding: 0.8rem 1rem; border-radius: 12px; font-size: clamp(1rem, 2.5vw, 1.4rem); font-weight: 500; text-align: center; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15); animation: slideDown 0.5s ease-out; line-height: 1.4; }
+    .db-banner { padding: 0.8rem 1rem; border-radius: 12px; font-size: clamp(1rem, 2.5vw, 1.4rem); font-weight: 500; text-align: center; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15); animation: slideDown 0.5s ease-out; line-height: 1.4; display: flex; align-items: center; justify-content: center; }
     .db-banner-postgres { background: linear-gradient(135deg, #10b981, #059669); color: white; border: 2px solid rgba(255, 255, 255, 0.3); }
     .db-banner-sql { background: linear-gradient(135deg, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.15)); backdrop-filter: blur(10px); color: white; border: 2px solid rgba(255, 255, 255, 0.3); }
+    .db-banner-text { display: inline-flex; align-items: center; }
+    .db-logo { height: clamp(40px, 8vw, 60px); width: auto; object-fit: contain; }
     @@keyframes slideDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
 </style>
 
