@@ -15,9 +15,21 @@
 
 <div class="container-fluid mt-4 px-4">
     <h1 class="mb-2 text-white">Document Processor</h1>
-    <div class="welcome-note mb-4">
+    <div class="welcome-note mb-3">
         <i class="bi bi-stars me-2"></i>Upload a doc and I will summarize it for you
     </div>
+    @if (DbInfo.DatabaseType.Contains("PostgreSQL"))
+    {
+        <div class="db-banner db-banner-postgres mb-4">
+            <i class="bi bi-rocket-takeoff-fill me-2"></i>YOU DID IT !!! I am running on Amazon Aurora PostgreSQL!!!
+        </div>
+    }
+    else
+    {
+        <div class="db-banner db-banner-sql mb-4">
+            <i class="bi bi-database-fill me-2"></i>I am running on SQL Server...
+        </div>
+    }
     <div class="row">
         <div class="col-md-2">
             <div class="card shadow">
@@ -161,6 +173,10 @@
     .action-icon { font-size: 1.5rem; line-height: 1; }
     .footer-icon { font-size: 1.3rem; vertical-align: middle; line-height: 1; }
     .status-badge-icon { font-size: 1.4rem; line-height: 1; }
+    .db-banner { padding: 1.2rem 2rem; border-radius: 15px; font-size: 1.4rem; font-weight: 500; text-align: center; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15); animation: slideDown 0.5s ease-out; }
+    .db-banner-postgres { background: linear-gradient(135deg, #10b981, #059669); color: white; border: 2px solid rgba(255, 255, 255, 0.3); }
+    .db-banner-sql { background: linear-gradient(135deg, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.15)); backdrop-filter: blur(10px); color: white; border: 2px solid rgba(255, 255, 255, 0.3); }
+    @@keyframes slideDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
 </style>
 
 @code {
